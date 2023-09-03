@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: ./cmd/backend.dockerfile
+    ports:
+      - "4000:4000"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=postgres dbname=production-api sslmode=disable timezone=UTC connect_timeout=5"
+
+  postgres:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: production-api
+    volumes: 
+      - ./db-data/postgres/:/var/lib/postgresql/data/
+    deploy:
+      mode: replicated
+      replicas: 1
